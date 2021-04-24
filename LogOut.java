@@ -21,5 +21,4 @@ public class LogOut
             System.out.println("Logged out");
         }
     }
-    
 }
