@@ -32,8 +32,7 @@ public class market_window extends Application {
 			seetingsPlace, reportPlace, readPlace, successLogOut;
 	// layouts
 	BorderPane board, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, bb0;
-	VBox v1, v2, v3;
-	HBox h1;
+	VBox v1, v2, v3, v4, v5, v6;
 	// textfields
 	TextField search;
 	// other
@@ -57,34 +56,48 @@ public class market_window extends Application {
 		// homeMarket stuff
 		// vbox's
 		v1 = new VBox();
-		v1.getChildren().addAll(header1("Everday Goods"), header2("Welcome to Shopify"), items[0].iName, items[1].iName,
-				items[2].iName);
+		v1.getChildren().addAll(header1("Everday Goods"), header2("Welcome to Shopify"));
 		v1.setAlignment(Pos.TOP_CENTER);
+
 		v2 = new VBox();
-		v2.getChildren().addAll(header2("Suggested Items for you"));
+		v2.getChildren().addAll(v1,
+				itemsColumn(
+						itemRow(itemColumn(items[0]), itemColumn(items[1]), itemColumn(items[2]), itemColumn(items[3])),
+						itemRow(itemColumn(items[4]), itemColumn(items[5]), itemColumn(items[6]))));
 		v2.setAlignment(Pos.TOP_CENTER);
-		v3 = new VBox();
-		v3.getChildren().addAll(header2("Check out these new..."));
-		v3.setAlignment(Pos.TOP_CENTER);
 		// hbox's
-		h1 = new HBox();
-		h1.getChildren().addAll(header3("Bottom"));
-		h1.setAlignment(Pos.CENTER);
+
+		// newMarket stuff
+		v3 = new VBox();
+		v3.getChildren().addAll(header1("Our Newest Goods"), header2("Shop the Latest Stuff"));
+		v3.setAlignment(Pos.TOP_CENTER);
+
+		v4 = new VBox();
+		v4.getChildren().addAll(v3, itemsColumn(
+				itemRow(itemColumn(items[7]), itemColumn(items[8]), itemColumn(items[9]), itemColumn(items[10])),
+				itemRow(itemColumn(items[11]), itemColumn(items[12]))));
+
+		// cart Place
+		v5 = new VBox();
+		v6 = new VBox();
 
 		// layout
 		board = new BorderPane();
-		BorderPane.setMargin(v1, new Insets(10, 10, 10, 10));
 		BorderPane.setMargin(v2, new Insets(10, 10, 10, 10));
-		BorderPane.setMargin(v3, new Insets(10, 10, 10, 10));
-		BorderPane.setMargin(h1, new Insets(10, 10, 10, 10));
 		board.setTop(topMenu());
-		board.setCenter(v1);
+		board.setCenter(v2);
 		board.setLeft(null);
 		board.setRight(null);
 		board.setBottom(null);
 
 		b0 = new BorderPane();
+		BorderPane.setMargin(v4, new Insets(10, 10, 10, 10));
 		b0.setTop(topMenu());
+		b0.setCenter(v4);
+		b0.setLeft(null);
+		b0.setRight(null);
+		b0.setBottom(null);
+
 		b1 = new BorderPane();
 		b1.setTop(topMenu());
 		b2 = new BorderPane();
@@ -95,6 +108,8 @@ public class market_window extends Application {
 		b4.setTop(topMenu());
 		b5 = new BorderPane();
 		b5.setTop(topMenu());
+		b5.setCenter(v5);
+
 		b6 = new BorderPane();
 		b6.setTop(topMenu());
 		b7 = new BorderPane();
@@ -105,6 +120,12 @@ public class market_window extends Application {
 		b9.setTop(topMenu());
 		bb0 = new BorderPane();
 		bb0.setTop(topMenu());
+
+		// transfer to cart
+		items[0].purchase.setOnAction(e -> {
+			v5.getChildren().add(itemColumn(items[0]));
+			items[0].purchase.setText("Remove from Cart");
+		});
 
 		// scenes
 		homeMarket = new Scene(board, 1920, 1080);
@@ -135,13 +156,13 @@ public class market_window extends Application {
 
 	MenuBar topMenu() {
 		// menubars
-		MenuBar topMenuBar;
+		final MenuBar topMenuBar;
 		// menus
 		Menu homeMenu;
-		Menu wishMenu;
-		Menu cartMenu;
-		Menu profileMenu;
-		Menu helpMenu;
+		final Menu wishMenu;
+		final Menu cartMenu;
+		final Menu profileMenu;
+		final Menu helpMenu;
 
 		// menus
 
@@ -171,7 +192,11 @@ public class market_window extends Application {
 
 		// cart menu
 		cartMenu = new Menu("My _Cart");
-		cartMenu.setOnAction(e -> window.setScene(cartPlace));
+		// items for cartMenu
+		final MenuItem myCart = new MenuItem("My _Cart...");
+		myCart.setOnAction(e -> window.setScene(cartPlace));
+
+		cartMenu.getItems().add(myCart);
 
 		// profile menu
 		profileMenu = new Menu("_Profile");
@@ -200,6 +225,75 @@ public class market_window extends Application {
 		topMenuBar.getMenus().addAll(homeMenu, wishMenu, cartMenu, profileMenu);
 
 		return topMenuBar;
+	}
+
+	HBox itemRow(VBox v1, VBox v2, VBox v3, VBox v4) { // item row
+		final HBox h = new HBox();
+		h.getChildren().addAll(v1, v2, v3, v4);
+		h.setAlignment(Pos.CENTER);
+		return h;
+	}
+
+	HBox itemRow(VBox v1, VBox v2, VBox v3) { // item row
+		final HBox h = new HBox();
+		h.getChildren().addAll(v1, v2, v3);
+		h.setAlignment(Pos.CENTER);
+		return h;
+	}
+
+	HBox itemRow(VBox v1, VBox v2) { // item row
+		final HBox h = new HBox();
+		h.getChildren().addAll(v1, v2);
+		h.setAlignment(Pos.CENTER);
+		return h;
+	}
+
+	VBox itemColumn(Item i) {
+		final VBox v = new VBox();
+		final Label itemNumber = new Label("Item Number:");
+		final Label itemPrice = new Label("Price:");
+		final Label itemLeft = new Label("Amount of Item Left:");
+		final HBox h1 = new HBox(itemNumber, i.iItemNumber), h2 = new HBox(itemPrice, i.iPrice),
+				h3 = new HBox(itemLeft, i.iAmountAvailable);
+		h1.setSpacing(5);
+		h2.setSpacing(5);
+		h3.setSpacing(5);
+		h1.setAlignment(Pos.CENTER);
+		h2.setAlignment(Pos.CENTER);
+		h3.setAlignment(Pos.CENTER);
+
+		v.getChildren().addAll(h1, i.iName, h2, h3, i.purchase);
+		v.setAlignment(Pos.CENTER);
+		v.setPadding(new Insets(10));
+		return v;
+	}
+
+	VBox itemsColumn(HBox h1, HBox h2, HBox h3) {
+		final VBox v = new VBox();
+		v.getChildren().addAll(h1, h2, h3);
+		v.setAlignment(Pos.CENTER);
+		return v;
+	}
+
+	VBox itemsColumn(HBox h1, HBox h2) {
+		final VBox v = new VBox();
+		v.getChildren().addAll(h1, h2);
+		v.setAlignment(Pos.CENTER);
+		return v;
+	}
+
+	VBox itemsColumn(HBox h1) {
+		final VBox v = new VBox();
+		v.getChildren().addAll(h1);
+		v.setAlignment(Pos.CENTER);
+		return v;
+	}
+
+	VBox itemsColumn(VBox v1) {
+		final VBox v = new VBox();
+		v.getChildren().addAll(v1);
+		v.setAlignment(Pos.CENTER);
+		return v;
 	}
 
 	Label header1(String header) {
