@@ -1,8 +1,8 @@
 package application;
 
-import java.util.Scanner;
-
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,23 +11,33 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+//implements market window
+//collects data from GetFileInfo class for item declaration
 
 public class market_window extends Application {
 
 	// primaries
 	Item[] items;
+	int totItems;
 	// window variables
 	Stage window;
 	// scenes
 	Scene homeMarket, newMarket, featuredMarket, salesMarket, leavingMarket, defaultList, cartPlace, accountPlace,
 			seetingsPlace, reportPlace, readPlace, successLogOut;
 	// layouts
-	BorderPane board, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, bb0, bb1, bb2, bb3, bb4, bb5, bb6;
+	BorderPane board, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, bb0;
+	VBox v1, v2, v3;
+	HBox h1;
 	// textfields
 	TextField search;
 	// other
-	Scanner read;
+	GetFileInfo itemInfo;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -39,10 +49,40 @@ public class market_window extends Application {
 		// TODO Auto-generated method stub
 		window = primaryStage;
 		window.setTitle("Market");
+		getStuff();
+		for (int i = 0; i < totItems; i++) {
+			items[i].setAttributes();
+		}
+
+		// homeMarket stuff
+		// vbox's
+		v1 = new VBox();
+		v1.getChildren().addAll(header1("Everday Goods"), header2("Welcome to Shopify"), items[0].iName, items[1].iName,
+				items[2].iName);
+		v1.setAlignment(Pos.TOP_CENTER);
+		v2 = new VBox();
+		v2.getChildren().addAll(header2("Suggested Items for you"));
+		v2.setAlignment(Pos.TOP_CENTER);
+		v3 = new VBox();
+		v3.getChildren().addAll(header2("Check out these new..."));
+		v3.setAlignment(Pos.TOP_CENTER);
+		// hbox's
+		h1 = new HBox();
+		h1.getChildren().addAll(header3("Bottom"));
+		h1.setAlignment(Pos.CENTER);
 
 		// layout
 		board = new BorderPane();
+		BorderPane.setMargin(v1, new Insets(10, 10, 10, 10));
+		BorderPane.setMargin(v2, new Insets(10, 10, 10, 10));
+		BorderPane.setMargin(v3, new Insets(10, 10, 10, 10));
+		BorderPane.setMargin(h1, new Insets(10, 10, 10, 10));
 		board.setTop(topMenu());
+		board.setCenter(v1);
+		board.setLeft(null);
+		board.setRight(null);
+		board.setBottom(null);
+
 		b0 = new BorderPane();
 		b0.setTop(topMenu());
 		b1 = new BorderPane();
@@ -67,23 +107,30 @@ public class market_window extends Application {
 		bb0.setTop(topMenu());
 
 		// scenes
-		homeMarket = new Scene(board, 1960, 1280);
-		newMarket = new Scene(b0, 1960, 1280);
-		featuredMarket = new Scene(b1, 1960, 1280);
-		salesMarket = new Scene(b2, 1960, 1280);
-		leavingMarket = new Scene(b3, 1960, 1280);
-		defaultList = new Scene(b4, 1960, 1280);
-		cartPlace = new Scene(b5, 1960, 1280);
-		accountPlace = new Scene(b6, 1960, 1280);
-		seetingsPlace = new Scene(b7, 1960, 1280);
-		reportPlace = new Scene(b8, 1960, 1280);
-		readPlace = new Scene(b9, 1960, 1280);
-		successLogOut = new Scene(bb0, 1960, 1280);
+		homeMarket = new Scene(board, 1920, 1080);
+		newMarket = new Scene(b0, 1920, 1080);
+		featuredMarket = new Scene(b1, 1920, 1080);
+		salesMarket = new Scene(b2, 1920, 1080);
+		leavingMarket = new Scene(b3, 1920, 1080);
+		defaultList = new Scene(b4, 1920, 1080);
+		cartPlace = new Scene(b5, 1920, 1080);
+		accountPlace = new Scene(b6, 1920, 1080);
+		seetingsPlace = new Scene(b7, 1920, 1080);
+		reportPlace = new Scene(b8, 1920, 1080);
+		readPlace = new Scene(b9, 1920, 1080);
+		successLogOut = new Scene(bb0, 1920, 1080);
 
-		homeMarket.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		// homeMarket.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
 		window.setScene(homeMarket);
 		window.show();
+	}
+
+	void getStuff() {
+		itemInfo = new GetFileInfo();
+		itemInfo.setAll();
+		items = itemInfo.getAll();
+		totItems = itemInfo.numItems;
 	}
 
 	MenuBar topMenu() {
@@ -112,7 +159,7 @@ public class market_window extends Application {
 		final MenuItem leavingStuff = new MenuItem("Leaving...");
 		leavingStuff.setOnAction(e -> window.setScene(leavingMarket));
 
-		homeMenu.getItems().addAll(newStuff, everydayStuff, premiumStuff, saleStuff, leavingStuff);
+		homeMenu.getItems().addAll(everydayStuff, newStuff, premiumStuff, saleStuff, leavingStuff);
 
 		// wish menu
 		wishMenu = new Menu("_Wish List");
@@ -156,22 +203,35 @@ public class market_window extends Application {
 	}
 
 	Label header1(String header) {
-		final Label h1 = new Label(header);
-		return h1;
+		final Label h = new Label(header);
+		h.setFont(Font.font("Veradana", FontWeight.BOLD, 40));
+		return h;
 	}
 
-	class Item {
+	Label header2(String header) {
+		final Label h = new Label(header);
+		h.setFont(Font.font("Veradana", FontWeight.BOLD, 22));
+		return h;
+	}
+
+	Label header3(String header) {
+		final Label h = new Label(header);
+		h.setFont(Font.font("Veradana", FontWeight.BOLD, 14));
+		return h;
+	}
+
+	public class Item {
 
 		private String name;
-		private final int itemNumber;
-		private final Date inDate;
+		private int itemNumber;
+		private Date inDate;
 		private double price;
 		private int amountAvailable;
-		Label iName;
-		Label iPrice;
-		Label iAmountAvailable;
-		Label iItemNumber;
-		Button purchase;
+		public Label iName;
+		public Label iPrice;
+		public Label iAmountAvailable;
+		public Label iItemNumber;
+		public Button purchase;
 
 		Item(int itemNumber, String name, Date inDate, double price, int amountAvailable) {
 			this.itemNumber = itemNumber;
@@ -180,6 +240,34 @@ public class market_window extends Application {
 			this.price = price;
 			this.amountAvailable = amountAvailable;
 
+			iName = new Label();
+			iPrice = new Label();
+			iAmountAvailable = new Label();
+			iItemNumber = new Label();
+			purchase = new Button();
+
+			iName.setText(name);
+			iPrice.setText(Double.toString(price));
+			iAmountAvailable.setText(Integer.toString(amountAvailable));
+			iItemNumber.setText(Integer.toString(itemNumber));
+			purchase.setText("add " + name + " to cart");
+		}
+
+		Item() {
+			this.itemNumber = 0;
+			this.name = "";
+			this.inDate = new Date();
+			this.price = 0;
+			this.amountAvailable = 0;
+
+			iName = new Label();
+			iPrice = new Label();
+			iAmountAvailable = new Label();
+			iItemNumber = new Label();
+			purchase = new Button();
+		}
+
+		void setAttributes() {
 			iName.setText(name);
 			iPrice.setText(Double.toString(price));
 			iAmountAvailable.setText(Integer.toString(amountAvailable));
@@ -192,6 +280,10 @@ public class market_window extends Application {
 				return true;
 			}
 			return false;
+		}
+
+		void setItemNumber(int itemNumber) {
+			this.itemNumber = itemNumber;
 		}
 
 		void setAmountAvailable(int amount) {
@@ -212,6 +304,14 @@ public class market_window extends Application {
 
 		String getDate() {
 			return inDate.getDate();
+		}
+
+		void setDate(int day, int month, int year) {
+			inDate.setDate(day, month, year);
+		}
+
+		void setDate(Date inDate) {
+			this.inDate = inDate;
 		}
 
 		void setPrice(double price) {
@@ -243,6 +343,12 @@ public class market_window extends Application {
 			this.day = day;
 			this.month = month;
 			this.year = year;
+		}
+
+		Date() {
+			day = 0;
+			month = 0;
+			year = 0;
 		}
 
 		String getDate() {
