@@ -26,7 +26,7 @@ public class market_window extends Application {
 	Item[] items;
 	int totItems;
 	// window variables
-	Stage window;
+	public Stage window;
 	// scenes
 	Scene homeMarket, newMarket, featuredMarket, salesMarket, leavingMarket, defaultList, cartPlace, accountPlace,
 			seetingsPlace, reportPlace, readPlace, successLogOut;
@@ -120,12 +120,6 @@ public class market_window extends Application {
 		b9.setTop(topMenu());
 		bb0 = new BorderPane();
 		bb0.setTop(topMenu());
-
-		// transfer to cart
-		items[0].purchase.setOnAction(e -> {
-			v5.getChildren().add(itemColumn(items[0]));
-			items[0].purchase.setText("Remove from Cart");
-		});
 
 		// scenes
 		homeMarket = new Scene(board, 1920, 1080);
@@ -248,13 +242,22 @@ public class market_window extends Application {
 		return h;
 	}
 
-	VBox itemColumn(Item i) {
+	public VBox itemColumn(Item i) {
 		final VBox v = new VBox();
-		final Label itemNumber = new Label("Item Number:");
-		final Label itemPrice = new Label("Price:");
+		final Label number = new Label("Item Number:");
+		final Label price = new Label("Price:");
 		final Label itemLeft = new Label("Amount of Item Left:");
-		final HBox h1 = new HBox(itemNumber, i.iItemNumber), h2 = new HBox(itemPrice, i.iPrice),
-				h3 = new HBox(itemLeft, i.iAmountAvailable);
+		final Label itemNumber = new Label(i.iItemNumber.getText());
+		final Label itemPrice = new Label(i.iPrice.getText());
+		final Label itemAmount = new Label(i.iAmountAvailable.getText());
+		final Label itemName = new Label(i.iName.getText());
+		final Button itemPurchase = new Button(i.purchase.getText());
+
+		// send items to cart
+		itemPurchase.setOnAction(e -> v5.getChildren().add(itemColumn(i)));
+
+		final HBox h1 = new HBox(number, itemNumber), h2 = new HBox(price, itemPrice),
+				h3 = new HBox(itemLeft, itemAmount);
 		h1.setSpacing(5);
 		h2.setSpacing(5);
 		h3.setSpacing(5);
@@ -262,7 +265,7 @@ public class market_window extends Application {
 		h2.setAlignment(Pos.CENTER);
 		h3.setAlignment(Pos.CENTER);
 
-		v.getChildren().addAll(h1, i.iName, h2, h3, i.purchase);
+		v.getChildren().addAll(h1, itemName, h2, h3, itemPurchase);
 		v.setAlignment(Pos.CENTER);
 		v.setPadding(new Insets(10));
 		return v;
@@ -428,41 +431,6 @@ public class market_window extends Application {
 			return name;
 		}
 
-	}
-
-	class Date {
-		int day, month, year;
-
-		Date(int day, int month, int year) {
-			this.day = day;
-			this.month = month;
-			this.year = year;
-		}
-
-		Date() {
-			day = 0;
-			month = 0;
-			year = 0;
-		}
-
-		String getDate() {
-			return Integer.toString(day) + "/" + Integer.toString(month) + "/" + Integer.toString(year);
-		}
-
-		void setDate(int day) {
-			this.day = day;
-		}
-
-		void setDate(int day, int month) {
-			this.day = day;
-			this.month = month;
-		}
-
-		void setDate(int day, int month, int year) {
-			this.day = day;
-			this.month = month;
-			this.year = year;
-		}
 	}
 
 }
